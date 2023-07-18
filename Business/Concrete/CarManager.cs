@@ -20,7 +20,18 @@ namespace Business.Concrete
 
         public void AddNewCar(Car car)
         {
-            _carDal.Add(car);
+            if (car.CarName.Length < 2)
+            {
+                Console.WriteLine("The Car Name must have minimum 2 character.");
+            }
+            else if (car.DailyPrice <= 0)
+            {
+                Console.WriteLine("Daily Price must be greater than zero.");
+            }
+            else
+            {
+                _carDal.Add(car);
+            }
         }
 
         public void DeleteCar(Car car)
@@ -35,12 +46,12 @@ namespace Business.Concrete
 
         public List<Car> GetCarsByBrandId(int id)
         {
-            return _carDal.GetAll(p=>p.BrandId == id);
+            return _carDal.GetAll(p => p.BrandId == id);
         }
 
         public List<Car> GetCarsByColorId(int id)
         {
-            return _carDal.GetAll(p=> p.ColorId == id);
+            return _carDal.GetAll(p => p.ColorId == id);
         }
 
         public void PrintTheList()
@@ -48,13 +59,24 @@ namespace Business.Concrete
             List<Car> listToPrint = _carDal.GetAll();
             foreach (var item in listToPrint)
             {
-                Console.WriteLine("Araç ID: " +item.Id + " || Desctiption: " + item.Description + " || Price: " + item.DailyPrice);
+                Console.WriteLine("Araç ID: " + item.Id + " || Desctiption: " + item.Description + " || Price: " + item.DailyPrice);
             }
         }
 
         public void UpdateCar(Car car)
         {
-            _carDal.Update(car);
+            if (car.CarName.Length < 2)
+            {
+                Console.WriteLine("The Car Name must have minimum 2 character.");
+            }
+            else if (car.DailyPrice <= 0)
+            {
+                Console.WriteLine("Daily Price must be greater than zero.");
+            }
+            else
+            {
+                _carDal.Update(car);
+            }
         }
     }
 }
