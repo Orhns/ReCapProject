@@ -1,4 +1,5 @@
 ﻿using Business.Concrete;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
@@ -10,12 +11,26 @@ internal class Program
     private static void Main(string[] args)
     {
         //CreateCarList();
-        //UpdateCars();
+        //UpdateCar(new Car { Id = 5, CarName = "Mustang", BrandId = 4, ColorId = 2, DailyPrice = 8000, Description = "Araba 5", ModelYear = 2019 });
         //DeleteCarList();
 
         GetDetailsTest();
 
         //BrandTest();
+        //AddCar();
+
+    }
+
+    private static void AddCar()
+    {
+        //Tablolara veri eklerken ID'leri manuel olarak set ettiğimiz için hata veriyor.
+        CarManager carManager = new CarManager(new EfCarDal());
+        var addingAct = carManager.AddNewCar(new Car { BrandId = 1, ColorId = 2, CarName = "T", DailyPrice = 299000, ModelYear = 2018, Description = "Test3", Id = 8 });
+
+        Console.WriteLine(addingAct.Message.ToString());
+
+        Console.WriteLine("///////////// Current List ///////////////");
+        carManager.PrintTheList();
     }
 
     private static void BrandTest()
@@ -32,17 +47,28 @@ internal class Program
     private static void GetDetailsTest()
     {
         CarManager carManager = new CarManager(new EfCarDal());
-        foreach (var car in carManager.GetCarDetails())
+
+        var result = carManager.GetCarDetails();
+        
+        if (result.Success)
         {
-            Console.WriteLine(car.CarName + " / " + car.BrandName + " / " + car.ColorName + " / " + car.DailyPrice);
+            foreach (var car in result.Data)
+            {
+                Console.WriteLine(car.CarName + " / " + car.BrandName + " / " + car.ColorName + " / " + car.DailyPrice);
+            }
         }
+        else
+        {
+            Console.WriteLine(result.Message);
+        }
+
     }
 
     private static void DeleteCarList()
     {
         CarManager carManager = new CarManager(new EfCarDal());
         Console.WriteLine("Deleting a car-----------------");
-        List<Car> carlist = carManager.GetAll();
+        List<Car> carlist = carManager.GetAll().Data;
         carManager.DeleteCar(carlist.SingleOrDefault(c => c.Id == 1));
         carManager.DeleteCar(carlist.SingleOrDefault(c => c.Id == 2));
         carManager.DeleteCar(carlist.SingleOrDefault(c => c.Id == 3));
@@ -51,11 +77,14 @@ internal class Program
         carManager.PrintTheList();
     }
 
-    private static void UpdateCars()
+    private static void UpdateCar(Car car)
     {
         CarManager carManager = new CarManager(new EfCarDal());
         Console.WriteLine("Updating a car-----------------");
-        carManager.UpdateCar(new Car { Id = 5, CarName = "Mst", DailyPrice = 99999999, Description = "Araba 5", ModelYear = 2023 });
+        var updateAct = carManager.UpdateCar(car);
+        Console.WriteLine(updateAct.Message.ToString());
+
+        Console.WriteLine("///////////// Current List ///////////////");
         carManager.PrintTheList();
     }
 
@@ -67,7 +96,7 @@ internal class Program
         carManager.AddNewCar(new Car { Id = 2, CarName = "Astra", BrandId = 1, ColorId = 3, DailyPrice = 10000, Description = "Araba 2", ModelYear = 2023 });
         carManager.AddNewCar(new Car { Id = 3, CarName = "Clio", BrandId = 5, ColorId = 8, DailyPrice = 1500, Description = "Araba 3", ModelYear = 2015 });
         carManager.AddNewCar(new Car { Id = 4, CarName = "R 5", BrandId = 5, ColorId = 2, DailyPrice = 8000, Description = "Araba 4", ModelYear = 2019 });
-        carManager.AddNewCar(new Car { Id = 5, CarName = "Mustang", BrandId = 3, ColorId = 2, DailyPrice = 8000, Description = "Araba 5", ModelYear = 2019 });
+        carManager.AddNewCar(new Car { Id = 5, CarName = "Mustang", BrandId = 4, ColorId = 2, DailyPrice = 8000, Description = "Araba 5", ModelYear = 2019 });
         carManager.PrintTheList();
     }
 

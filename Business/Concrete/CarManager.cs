@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Core.Utilities.Results;
 using DataAccess.Abstract;
 using Entities.Concrete;
 using Entities.DTOs;
@@ -19,50 +20,52 @@ namespace Business.Concrete
             _carDal = carDal;
         }
 
-        public void AddNewCar(Car car)
+        public IResult AddNewCar(Car car)
         {
             if (car.CarName.Length < 2)
             {
-                Console.WriteLine("The Car Name must have minimum 2 character.");
+                return new Result(false, "The Car Name must have minimum 2 character.");
             }
             else if (car.DailyPrice <= 0)
             {
-                Console.WriteLine("Daily Price must be greater than zero.");
+                return new Result(false, "Daily Price must be greater than zero.");
             }
             else
             {
                 _carDal.Add(car);
+                return new Result(true, "Car added");
             }
         }
 
-        public void DeleteCar(Car car)
+        public IResult DeleteCar(Car car)
         {
             _carDal.Delete(car);
+            return new Result(true, "Car deleted");
         }
 
-        public List<Car> GetAll()
+        public IDataResult<List<Car>> GetAll()
         {
-            return _carDal.GetAll();
+            return new DataResult<List<Car>>(_carDal.GetAll(), true);
         }
 
-        public Car GetById(int carId)
+        public IDataResult<Car> GetById(int carId)
         {
-            return _carDal.Get(c=>c.Id==carId);
+            return new DataResult<Car>(_carDal.Get(c => c.Id == carId),true);
         }
 
-        public List<CarDetailDto> GetCarDetails()
+        public IDataResult<List<CarDetailDto>> GetCarDetails()
         {
-            return _carDal.GetCarDetails().ToList();
+            return new DataResult<List<CarDetailDto>>(_carDal.GetCarDetails().ToList(),true);
         }
 
-        public List<Car> GetCarsByBrandId(int id)
+        public IDataResult<List<Car>> GetCarsByBrandId(int id)
         {
-            return _carDal.GetAll(p => p.BrandId == id);
+            return new DataResult<List<Car>>(_carDal.GetAll(p => p.BrandId == id), true);
         }
 
-        public List<Car> GetCarsByColorId(int id)
+        public IDataResult<List<Car>> GetCarsByColorId(int id)
         {
-            return _carDal.GetAll(p => p.ColorId == id);
+            return new DataResult<List<Car>>(_carDal.GetAll(p => p.ColorId == id),true);
         }
 
         public void PrintTheList()
@@ -74,19 +77,20 @@ namespace Business.Concrete
             }
         }
 
-        public void UpdateCar(Car car)
+        public IResult UpdateCar(Car car)
         {
             if (car.CarName.Length < 2)
             {
-                Console.WriteLine("The Car Name must have minimum 2 character.");
+                return new Result(false, "The Car Name must have minimum 2 character.");
             }
             else if (car.DailyPrice <= 0)
             {
-                Console.WriteLine("Daily Price must be greater than zero.");
+                return new Result(false, "Daily Price must be greater than zero.");
             }
             else
             {
                 _carDal.Update(car);
+                return new Result(true, "Car info updated successfully.");
             }
         }
     }
