@@ -13,19 +13,29 @@ internal class Program
         //CreateCarList();
         //UpdateCar(new Car { Id = 5, CarName = "Mustang", BrandId = 4, ColorId = 2, DailyPrice = 8000, Description = "Araba 5", ModelYear = 2019 });
         //DeleteCarList();
-
-        GetDetailsTest();
+        DeleteCar(8);
+        //GetDetailsTest();
 
         //BrandTest();
         //AddCar();
 
     }
 
+    private static void DeleteCar(int id)
+    {
+        CarManager manager = new CarManager(new EfCarDal());
+        Console.WriteLine("Deleting a car-----------------");
+        var result = manager.DeleteCar(manager.GetAll().Data.SingleOrDefault(c=>c.Id == id));
+        Console.WriteLine(result.Message);
+        Console.WriteLine("///////////// Current List ///////////////");
+        manager.PrintTheList();
+    }
+
     private static void AddCar()
     {
         //Tablolara veri eklerken ID'leri manuel olarak set ettiğimiz için hata veriyor.
         CarManager carManager = new CarManager(new EfCarDal());
-        var addingAct = carManager.AddNewCar(new Car { BrandId = 1, ColorId = 2, CarName = "T", DailyPrice = 299000, ModelYear = 2018, Description = "Test3", Id = 8 });
+        var addingAct = carManager.AddNewCar(new Car { BrandId = 1, ColorId = 2, CarName = "TEST", DailyPrice = 1111111, ModelYear = 2020, Description = "TEST", Id = 8 });
 
         Console.WriteLine(addingAct.Message.ToString());
 
