@@ -13,7 +13,7 @@ internal class Program
         //CreateCarList();
         //UpdateCar(new Car { Id = 5, CarName = "Mustang", BrandId = 4, ColorId = 2, DailyPrice = 8000, Description = "Araba 5", ModelYear = 2019 });
         //DeleteCarList();
-        DeleteCar(8);
+        DeleteCar(6);
         //GetDetailsTest();
 
         //BrandTest();
