@@ -4,6 +4,7 @@ using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
+using Microsoft.VisualBasic;
 using System.Threading.Channels;
 
 internal class Program
@@ -13,12 +14,33 @@ internal class Program
         //CreateCarList();
         //UpdateCar(new Car { Id = 5, CarName = "Mustang", BrandId = 4, ColorId = 2, DailyPrice = 8000, Description = "Araba 5", ModelYear = 2019 });
         //DeleteCarList();
-        DeleteCar(6);
+        //DeleteCar(6);
         //GetDetailsTest();
 
         //BrandTest();
         //AddCar();
+        //RentACar();
+        //ReturnACar();
 
+    }
+
+    private static void ReturnACar()
+    {
+        RentalManager manager = new RentalManager(new EfRentalDal());
+        Console.WriteLine("Returning a car-----------------");
+        var result = manager.ReturnTheCar(5);
+        Console.WriteLine(result.Message);
+    }
+
+    private static void RentACar()
+    {
+        RentalManager manager = new RentalManager(new EfRentalDal());
+        Console.WriteLine("Renting a car-----------------");
+        var date = DateAndTime.Now;
+        var result = manager.RentTheCar(new Rental { Id = 3, CarId = 5, CustomerId = 1, RentDate = date }) ;
+        Console.WriteLine(result.Message);
+        //Console.WriteLine("///////////// Current List ///////////////");
+        //Console.WriteLine(manager.GetAll());
     }
 
     private static void DeleteCar(int id)

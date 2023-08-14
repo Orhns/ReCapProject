@@ -19,27 +19,36 @@ namespace Business.Concrete
             _rentalDal = rentalDal;
         }
 
-        public IResult AddNewRental(Rental rental)
+        public IResult RentTheCar(Rental rental)
         {
-            _rentalDal.Add(rental);
-            return new SuccessResult("Araç kiralama bilgisi eklendi");
+            var rentalInfo = _rentalDal.Get(r => r.CarId == rental.CarId && r.ReturnDate == default);
+            if (rentalInfo == null)
+            {
+                _rentalDal.Add(rental);
+                return new SuccessResult(rental.CarId + " : Araç kiralandı");
+            }
+            else
+            {
+                return new ErrorResult(rental.CarId + " : Araç kiralamaya uygun değil");
+            }
         }
-
-        public IResult DeleteRental(Rental rental)
+        public IResult ReturnTheCar(int carId)
         {
-            _rentalDal.Delete(rental);
-            return new SuccessResult("Araç kiralama bilgisi silindi");
+            var rentalInfo = _rentalDal.Get(r => r.CarId == carId && r.ReturnDate == default);
+            if (rentalInfo != null)
+            {
+                rentalInfo.ReturnDate = DateTime.Now;
+                _rentalDal.Update(rentalInfo);
+                return new SuccessResult(rentalInfo.CarId + " : araç iade alındı");
+            }
+            else
+            {
+                return new ErrorResult(rentalInfo.CarId + " : The Car is already at hand");
+            }
         }
-
         public IDataResult<List<Rental>> GetAll()
         {
             return new SuccessDataResult<List<Rental>>(_rentalDal.GetAll());
-        }
-
-        public IResult UpdateRental(Rental rental)
-        {
-            _rentalDal.Update(rental);
-            return new SuccessResult("Kiralama bilgisi güncellendi");
         }
     }
 }
