@@ -1,9 +1,11 @@
-﻿using Business.Concrete;
+﻿using Business.Abstract;
+using Business.Concrete;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework;
 using DataAccess.Concrete.InMemory;
 using Entities.Concrete;
+using Entities.DTOs;
 using Microsoft.VisualBasic;
 using System.Threading.Channels;
 
@@ -21,7 +23,24 @@ internal class Program
         //AddCar();
         //RentACar();
         //ReturnACar();
+        //RentedCarList();
+    }
 
+    private static void RentedCarList()
+    {
+        RentalManager rentalManager = new RentalManager(new EfRentalDal());
+        var result = rentalManager.GetAll();
+        if (result.Success)
+        {
+            foreach (var rent in result.Data)
+            {
+                Console.WriteLine(rent.Id + " --> " + rent.RentDate);
+            }
+        }
+        else
+        {
+            Console.WriteLine(result.Message);
+        }
     }
 
     private static void ReturnACar()
@@ -57,7 +76,7 @@ internal class Program
     {
         //Tablolara veri eklerken ID'leri manuel olarak set ettiğimiz için hata veriyor.
         CarManager carManager = new CarManager(new EfCarDal());
-        var addingAct = carManager.AddNewCar(new Car { BrandId = 1, ColorId = 2, CarName = "TEST", DailyPrice = 1111111, ModelYear = 2020, Description = "TEST", Id = 8 });
+        var addingAct = carManager.AddNewCar(new Car { BrandId = 1, ColorId = 2, CarName = "TEST", DailyPrice = 1111111, ModelYear = 2020, Description = "TEST"});
 
         Console.WriteLine(addingAct.Message.ToString());
 
@@ -101,11 +120,10 @@ internal class Program
         CarManager carManager = new CarManager(new EfCarDal());
         Console.WriteLine("Deleting a car-----------------");
         List<Car> carlist = carManager.GetAll().Data;
-        carManager.DeleteCar(carlist.SingleOrDefault(c => c.Id == 1));
-        carManager.DeleteCar(carlist.SingleOrDefault(c => c.Id == 2));
-        carManager.DeleteCar(carlist.SingleOrDefault(c => c.Id == 3));
-        carManager.DeleteCar(carlist.SingleOrDefault(c => c.Id == 4));
-        carManager.DeleteCar(carlist.SingleOrDefault(c => c.Id == 5));
+        foreach (var item in carlist)
+        {
+            carManager.DeleteCar(item);
+        }
         carManager.PrintTheList();
     }
 
@@ -124,11 +142,11 @@ internal class Program
     {
         CarManager carManager = new CarManager(new EfCarDal());
         Console.WriteLine("Adding new cars-----------------");
-        carManager.AddNewCar(new Car { Id = 1, CarName = "Rio", BrandId = 2, ColorId = 1, DailyPrice = 2500, Description = "Araba 1", ModelYear = 2013 });
-        carManager.AddNewCar(new Car { Id = 2, CarName = "Astra", BrandId = 1, ColorId = 3, DailyPrice = 10000, Description = "Araba 2", ModelYear = 2023 });
-        carManager.AddNewCar(new Car { Id = 3, CarName = "Clio", BrandId = 5, ColorId = 8, DailyPrice = 1500, Description = "Araba 3", ModelYear = 2015 });
-        carManager.AddNewCar(new Car { Id = 4, CarName = "R 5", BrandId = 5, ColorId = 2, DailyPrice = 8000, Description = "Araba 4", ModelYear = 2019 });
-        carManager.AddNewCar(new Car { Id = 5, CarName = "Mustang", BrandId = 4, ColorId = 2, DailyPrice = 8000, Description = "Araba 5", ModelYear = 2019 });
+        carManager.AddNewCar(new Car { CarName = "Rio", BrandId = 2, ColorId = 1, DailyPrice = 2500, Description = "Araba 1", ModelYear = 2013 });
+        carManager.AddNewCar(new Car { CarName = "Astra", BrandId = 1, ColorId = 3, DailyPrice = 10000, Description = "Araba 2", ModelYear = 2023 });
+        carManager.AddNewCar(new Car { CarName = "Clio", BrandId = 5, ColorId = 8, DailyPrice = 1500, Description = "Araba 3", ModelYear = 2015 });
+        carManager.AddNewCar(new Car { CarName = "R 5", BrandId = 5, ColorId = 2, DailyPrice = 8000, Description = "Araba 4", ModelYear = 2019 });
+        carManager.AddNewCar(new Car { CarName = "Mustang", BrandId = 4, ColorId = 2, DailyPrice = 8000, Description = "Araba 5", ModelYear = 2019 });
         carManager.PrintTheList();
     }
 
